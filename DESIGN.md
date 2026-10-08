@@ -110,7 +110,7 @@ request (exit 253).
 privileged side                               guest trusted/shop
 ┌──────────────┐  guest_exec                  ┌──────────────────────────────┐
 │ penyero      │  (docker exec -i             │ penyero relay                │
-│ serve        │   aiws-trusted-shop          │   listens on a Unix socket   │
+│ serve        │   cayo-trusted-shop          │   listens on a Unix socket   │
 │ trusted shop │ ────── penyero relay) ─────▶ │   in the guest               │
 │              │ ◀───── stdin/stdout ───────▶ │                          ▲   │
 └──────────────┘                              │ penyero request ... ─────┘   │
@@ -287,19 +287,19 @@ rules. Details are open (§12).
 Iterations are short and each one is usable; what comes after is chosen when the previous one
 ships (SPEC.md §10).
 
-1. **Environment** ([SETUP.md](SETUP.md)): the guest runtime, the profile images, one `trusted`
-   guest, egress for it, the tmux layout, and the verification checklist. Building the rest
-   *inside* the real boundary surfaces the true frictions instead of guessing them.
+1. **Environment** ([SETUP.md](SETUP.md)): [cayo](https://github.com/nandilugio/cayo) with one
+   `trusted` guest and its egress, verified, and the tmux layout. Building the rest *inside* the
+   real boundary surfaces the true frictions instead of guessing them.
 2. **Core loop, minimal:** `serve` with configuration resolution, the channel and relay, one
    resource, `request`/`wait`/`retrieve` and the prompt with both confirmations, with requests
    running concurrently up to each resource's `concurrency`. Against a local dev database, with
-   the Postgres example resource of SETUP.md §9 built and tested here. The channel parser and
+   the Postgres example resource of SETUP.md §6 built and tested here. The channel parser and
    schema checks are fuzzed with malformed and adversarial input from this iteration on.
 3. **Core loop, complete:** `list`, `describe`, `pending`, `cancel`, output review with the
    external pager and editor, timeouts and the running view, the audit log, a read-only cloud
    resource.
-4. **Git and deploy flow** (SETUP.md): clean clones, the `ext::` remote, push and deploy from a
-   reviewed commit.
+4. **Git and deploy flow** (cayo's git review flow, SETUP.md §7): clean clones, the `ext::`
+   remote, push and deploy from a reviewed commit.
 5. The rest of the backlog, in the order decided at the time.
 
 ## 12. Open questions

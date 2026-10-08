@@ -1,9 +1,0 @@
-# A guest's allow-list: copy to ~/.aiws/egress/aiws-<profile>-<name>.txt (SETUP.md §5).
-# One hostname per line; a leading dot also matches subdomains (.example.com). Start as empty
-# as the work allows and add hosts as the proxy refuses them (`aiws denied`): `aiws allow` adds
-# and reloads; after editing by hand, `aiws reload`. Keep hosts that store data for any account
-# off it where possible (SPEC.md §3): exact names, not whole domains.
-#
-# For example, an agent's API, and git over HTTPS on GitHub:
-# api.anthropic.com
-# github.com

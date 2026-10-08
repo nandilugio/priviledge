@@ -32,7 +32,7 @@ documents:
 
 - [SPEC.md](SPEC.md): what penyero is and does, and its security model.
 - [DESIGN.md](DESIGN.md): how it is built.
-- [SETUP.md](SETUP.md): a reference deployment around it, with its files in
-  [examples/setup/](examples/setup/).
+- [SETUP.md](SETUP.md): a reference deployment around it, on
+  [cayo](https://github.com/nandilugio/cayo), isolated workspaces for AI agents.
 
 Licensed under the [MIT License](LICENSE).

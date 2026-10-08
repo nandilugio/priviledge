@@ -8,9 +8,9 @@ interfaces the agent and the human use. Two other documents cover the rest:
 
 - [DESIGN.md](DESIGN.md): **how** it is built. Processes, protocol, technology, first iterations.
   It can change without changing this document.
-- [SETUP.md](SETUP.md): one reference deployment around it (container runtime, images, terminal,
-  editor, review tools, git remotes, egress). penyero depends only on the deployment contract
-  in §4.
+- [SETUP.md](SETUP.md): one reference deployment around it: the isolated workspaces of
+  [cayo](https://github.com/nandilugio/cayo), and penyero's own pieces (the approval pane, review
+  tools, resources). penyero depends only on the deployment contract in §4.
 
 ## 1. Problem
 
@@ -569,7 +569,7 @@ run = "~/.penyero/resources/ask-human"   # echoes the task back (§8, human reso
 input = "stdin"
 
 [profiles.trusted]
-guest_exec = ["docker", "--context", "colima-aiws", "exec", "-i", "aiws-{profile}-{name}"]
+guest_exec = ["docker", "--context", "colima-cayo", "exec", "-i", "cayo-{profile}-{name}"]
 notify = "bell"
 [profiles.trusted.resources]
 prod-db-ro = { confirm_request = false, confirm_output = false }
@@ -578,7 +578,7 @@ aws-readonly = { confirm_request = false }
 ask-human = {}
 
 [profiles.public]
-guest_exec = ["docker", "--context", "colima-aiws", "exec", "-i", "aiws-{profile}-{name}"]
+guest_exec = ["docker", "--context", "colima-cayo", "exec", "-i", "cayo-{profile}-{name}"]
 notify = "bell"
 [profiles.public.resources]
 prod-db-ro = {}            # every request and every output is confirmed
