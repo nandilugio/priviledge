@@ -229,12 +229,13 @@ public tracker in `public`.
   allow-list.
 - Network services the guest can reach: dev services (which hold dev data only, and must have no
   route out of their own, since the guest can often run code in them) and, depending on the
-  deployment, services listening on the host (see SETUP.md).
+  deployment, services listening on the host (see SETUP.md and the deployment's own
+  documentation).
 - Escape from the guest through a runtime or kernel vulnerability. The strength of this boundary
   is a deployment choice. One class deserves naming, because penyero triggers it: running a
   program inside a hostile guest (contract item 2) is what container-escape flaws such as
   CVE-2019-5736 in runc exploited. Keep the runtime patched, and prefer runtimes that put a VM
-  around each guest (see SETUP.md).
+  around each guest (SETUP.md §1 and §8).
 - The human being misled by what the agent shows them. Mitigated by rendering request and output
   content safely (§7), by keeping approvals specific, and later by checkers (§10).
 

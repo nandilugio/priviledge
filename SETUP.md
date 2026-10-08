@@ -19,8 +19,8 @@ installing it, its VMs, guests, egress, image, the git review flow, dev services
 verification. It meets the deployment contract (SPEC.md §4):
 
 1. **Separation.** Guests run in colima VMs that mount only their exchange directories and,
-   read-only (enforced by the host), the human's dotfiles. Nothing of `~/.penyero` is visible to
-   them.
+   read-only (enforced by the host), the human's dotfiles and whatever `CAYO_VM_MOUNTS` adds
+   (clean clones for compose). Nothing of `~/.penyero` is visible to them.
 2. **A way to run a program inside a guest:** `docker --context colima-cayo exec -i
    cayo-<profile>-<name>`, the `guest_exec` of §3.
 3. **No path back.** Guests get no runtime socket, no capabilities, no privilege escalation and no
@@ -57,10 +57,15 @@ listens in its home volume (DESIGN.md §3).
 
 ## 4. The approval pane
 
-Each guest's broker runs in a terminal pane of its own, next to the guest's window
-(`cayo-window <profile> <name>`). With tmux:
+Each guest's broker runs in a terminal pane of its own, next to the guest's panes. A tmux window
+per guest, for a profile `p` and a name `n`: the editor, the agent and a shell in the guest, and
+the approval pane under `dtach`:
 
 ```sh
+mkdir -p ~/.penyero/run
+tmux new-window -n "$p/$n" "cayo exec $p $n nvim"
+tmux split-window -h "cayo exec $p $n opencode"
+tmux split-window -v "cayo exec $p $n"
 tmux split-window -v "dtach -A ~/.penyero/run/$p-$n.serve -r winch penyero serve $p $n"
 ```
 
