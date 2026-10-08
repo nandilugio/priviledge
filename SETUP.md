@@ -33,12 +33,12 @@ verification. It meets the deployment contract (SPEC.md §4):
 ## 2. The client in the guest image
 
 penyero is one program (DESIGN.md §1), installed the same way everywhere; in the guest only its
-client and relay subcommands are used. It goes into the guest image through cayo's image layer,
-`~/.cayo/image/Dockerfile` (`FROM cayo-base`), installed system-wide: `guest_exec` runs it without
-a login shell, so it must be on the default `PATH`. Its integrity in the guest doesn't matter
-(SPEC.md §3): it only has to speak a protocol version the broker accepts (DESIGN.md §4). The
-broker's copy is what matters: install it on the host from a privileged-owned clean clone at a
-reviewed tag, never from a guest.
+client and relay subcommands are used. It goes into the guest image through one of cayo's image
+layers (`~/.cayo/image/Dockerfile`, for every profile), installed system-wide: `guest_exec` runs
+it without a login shell, so it must be on the default `PATH`. Its integrity in the guest doesn't
+matter (SPEC.md §3): it only has to speak a protocol version the broker accepts (DESIGN.md §4).
+The broker's copy is what matters: install it on the host from a privileged-owned clean clone at
+a reviewed tag, never from a guest.
 
 ## 3. Configuration
 
@@ -57,25 +57,21 @@ listens in its home volume (DESIGN.md §3).
 
 ## 4. The approval pane
 
-Each guest's broker runs in a terminal pane of its own, next to the guest's panes. A tmux window
-per guest, for a profile `p` and a name `n`: the editor, the agent and a shell in the guest, and
-the approval pane under `dtach`:
+Each guest's broker runs in a terminal pane of its own, next to the panes that are in the guest:
 
 ```sh
-mkdir -p ~/.penyero/run
-tmux new-window -n "$p/$n" "cayo exec $p $n nvim"
-tmux split-window -h "cayo exec $p $n opencode"
-tmux split-window -v "cayo exec $p $n"
-tmux split-window -v "dtach -A ~/.penyero/run/$p-$n.serve -r winch penyero serve $p $n"
+tmux split-window "penyero serve trusted shop"
 ```
 
-- **The approval pane in more than one window.** tmux can't show one pane in two windows, so the
-  broker runs under `dtach`, which multiplexes its terminal: a second window attaches to the same
-  socket (`dtach -a <sock> -r winch`), input from any attached window reaches the prompt, and
-  output goes to all. The socket is privileged-owned and never visible to guests. One limit
-  **(verify)**: the broker's terminal has one size, that of the window attached last, so the
-  full-screen pager or editor renders correctly only in windows of that size; the line-oriented
-  prompt is unaffected. `abduco` is the alternative with the same shape.
+- **The approval pane in more than one window.** tmux can't show one pane in two windows. To
+  reach the same prompt from several, run the broker under `dtach`, which multiplexes its
+  terminal: `dtach -A ~/.penyero/run/trusted-shop.serve -r winch penyero serve trusted shop` in
+  one window (the directory created first), `dtach -a ~/.penyero/run/trusted-shop.serve -r
+  winch` in another; input from any attached window reaches the prompt, and output goes to all.
+  The socket is privileged-owned and never visible to guests. One limit **(verify)**: the
+  broker's terminal has one size, that of the window attached last, so the full-screen pager or
+  editor renders correctly only in windows of that size; the line-oriented prompt is unaffected.
+  `abduco` is the alternative with the same shape.
 - New prompts ring the terminal bell (`notify`, SPEC.md §8); `set -g monitor-bell on` and
   `set -g bell-action other` make tmux flag the window.
 - The broker's connection to the guest has no terminal (it starts `guest_exec` detached,
